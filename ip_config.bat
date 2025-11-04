@@ -171,40 +171,40 @@ echo.
 echo Adapter: !selectedAdapter!
 echo.
 set "escapedAdapter=!selectedAdapter:'=''!"
-set "logFile=%temp%\ipreset_%random%.log"
-echo Obtaining IP address automatically... > "%logFile%"
-netsh interface ip set address name="!selectedAdapter!" source=dhcp >>"%logFile%" 2>&1
-if %errorLevel% equ 0 (
+
+echo Obtaining IP address automatically...
+netsh interface ip set address name="!selectedAdapter!" source=dhcp >nul 2>&1
+set "status=!errorlevel!"
+if !status! equ 0 (
     echo [OK] IP address set to obtain automatically (DHCP)
 ) else (
-    echo Trying PowerShell fallback to enable DHCP...
-    powershell -Command "$adapter = '!escapedAdapter!'; Try { Set-NetIPInterface -InterfaceAlias $adapter -Dhcp Enabled; Write-Output 'PS: DHCP enabled' } Catch { Write-Error $_.Exception.Message; exit 1 }" >>"%logFile%" 2>&1
-    if %errorLevel% equ 0 (
-        echo [OK] IP address set to obtain automatically (DHCP)
+    REM netsh failed, try PowerShell fallback
+    powershell -Command "$adapter = '!escapedAdapter!'; Try { Set-NetIPInterface -InterfaceAlias $adapter -Dhcp Enabled } Catch { exit 1 }" >nul 2>&1
+    set "status=!errorlevel!"
+    if !status! equ 0 (
+        echo [OK] IP address set to obtain automatically (DHCP via PowerShell)
     ) else (
         color 0C
         echo [ERROR] Failed to set IP configuration to DHCP
-        echo --- output ---
-        type "%logFile%"
-        echo ---------------------
+        color 0A
     )
 )
 echo.
-echo Setting DNS servers to obtain automatically... >> "%logFile%"
-netsh interface ip set dns name="!selectedAdapter!" source=dhcp >>"%logFile%" 2>&1
-if %errorLevel% equ 0 (
+echo Setting DNS servers to obtain automatically...
+netsh interface ip set dns name="!selectedAdapter!" source=dhcp >nul 2>&1
+set "status=!errorlevel!"
+if !status! equ 0 (
     echo [OK] DNS servers set to obtain automatically (DHCP)
 ) else (
-    echo Trying PowerShell fallback to reset DNS servers...
-    powershell -Command "$adapter = '!escapedAdapter!'; Try { Set-DnsClientServerAddress -InterfaceAlias $adapter -ResetServerAddresses; Write-Output 'PS: DNS reset' } Catch { Write-Error $_.Exception.Message; exit 1 }" >>"%logFile%" 2>&1
-    if %errorLevel% equ 0 (
-        echo [OK] DNS servers set to obtain automatically (DHCP)
+    REM netsh failed, try PowerShell fallback
+    powershell -Command "$adapter = '!escapedAdapter!'; Try { Set-DnsClientServerAddress -InterfaceAlias $adapter -ResetServerAddresses } Catch { exit 1 }" >nul 2>&1
+    set "status=!errorlevel!"
+    if !status! equ 0 (
+        echo [OK] DNS servers set to obtain automatically (DHCP via PowerShell)
     ) else (
         color 0C
         echo [ERROR] Failed to set DNS to DHCP
-        echo --- output ---
-        type "%logFile%"
-        echo ---------------------
+        color 0A
     )
 )
 
@@ -212,13 +212,12 @@ echo.
 echo Current adapter configuration:
 netsh interface ip show config name="!selectedAdapter!"
 echo.
-echo Attempting to remove leftover default gateway routes (if any)... >> "%logFile%"
-powershell -Command "$adapter = '!escapedAdapter!'; Try { $r = Get-NetRoute -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue | Where-Object { $_.InterfaceAlias -eq $adapter }; if ($r) { $r | ForEach-Object { Remove-NetRoute -DestinationPrefix $_.DestinationPrefix -NextHop $_.NextHop -InterfaceIndex $_.InterfaceIndex -Confirm:$false -ErrorAction Stop }; Write-Output \"PS: Removed default gateway route(s) for $adapter\" } else { Write-Output \"PS: No default gateway routes found for $adapter\" } } Catch { Write-Error $_.Exception.Message; exit 1 }" >>"%logFile%" 2>&1
+echo Attempting to remove leftover default gateway routes (if any)...
+powershell -Command "$adapter = '!escapedAdapter!'; $r = Get-NetRoute -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue | Where-Object { $_.InterfaceAlias -eq $adapter }; if ($r) { $r | ForEach-Object { Remove-NetRoute -DestinationPrefix $_.DestinationPrefix -NextHop $_.NextHop -InterfaceIndex $_.InterfaceIndex -Confirm:$false -ErrorAction SilentlyContinue }; Write-Output 'Removed default gateway route(s)' } else { Write-Output 'No default gateway routes found' }" 2>nul
 echo.
 echo Adapter configuration after route removal attempt:
 netsh interface ip show config name="!selectedAdapter!"
 echo.
-del "%logFile%" 2>nul
 echo.
 echo ============================================
 echo    Reset to Default Settings Complete!
