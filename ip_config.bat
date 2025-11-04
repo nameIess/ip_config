@@ -18,7 +18,7 @@ echo ============================================
 echo    Network Profile Configuration Tool
 echo ============================================
 echo.
-echo Detecting available network adapters...
+echo  Detecting available network adapters...
 echo.
 
 :: Create a temporary file to store adapter names
@@ -30,7 +30,7 @@ set count=0
 for /f "usebackq delims=" %%a in ("%tempFile%") do (
     set /a count+=1
     set "adapter!count!=%%a"
-    echo [!count!] %%a
+    echo  [!count!] %%a
 )
 
 :: Clean up temp file
@@ -46,7 +46,8 @@ if %count%==0 (
 
 echo.
 echo ============================================
-set /p selection="Select adapter number (1-%count%): "
+set /p selection= "Select adapter number (1-%count%): "
+cls
 
 :: Validate selection
 if "!selection!"=="" goto INVALID
@@ -64,26 +65,20 @@ if "!selection!"=="7" set "selectedAdapter=!adapter7!"
 if "!selection!"=="8" set "selectedAdapter=!adapter8!"
 if "!selection!"=="9" set "selectedAdapter=!adapter9!"
 if "!selection!"=="10" set "selectedAdapter=!adapter10!"
-echo.
-echo Selected Adapter: !selectedAdapter!
-echo.
 
 :PROFILE_MENU
 echo ============================================
 echo     Choose Configuration Profile
 echo ============================================
+echo  ----Selected Adapter: !selectedAdapter!----
 echo.
-echo [1] PC 1 Profile
-echo     - IP: 192.168.0.1
-echo     - Gateway: 192.168.0.2
+echo  [1] PC 1 Profile - IP: 192.168.0.1 - Gateway: 192.168.0.2
 echo.
-echo [2] PC 2 Profile
-echo     - IP: 192.168.0.2
-echo     - Gateway: 192.168.0.1
+echo  [2] PC 2 Profile - IP: 192.168.0.2 - Gateway: 192.168.0.1
 echo.
-echo [3] Reset to Default (DHCP)
+echo  [3] Reset to Default (DHCP)
 echo.
-echo [4] Return to Adapter Selection
+echo  [4] Return to Adapter Selection
 echo.
 echo ============================================
 set /p profile="Select profile (1-4): "
