@@ -120,6 +120,8 @@ echo   PC 1 Profile Configuration Complete!
 echo ============================================
 echo.
 choice /c RN /n /m "Press R to return to menu, any other key to exit"
+echo.
+cls
 if %errorlevel% equ 1 goto PROFILE_MENU
 goto END
 
@@ -154,6 +156,8 @@ echo   PC 2 Profile Configuration Complete!
 echo ============================================
 echo.
 choice /c RN /n /m "Press R to return to menu, any other key to exit"
+echo.
+cls
 if %errorlevel% equ 1 goto PROFILE_MENU
 goto END
 

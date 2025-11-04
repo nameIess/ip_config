@@ -1,36 +1,72 @@
-# Network Profile Configuration Tool 🖧
+# 🌐 Network Profile Configuration Tool
 
-A Windows batch script for quickly switching network adapter profiles between static IPs and DHCP, with auto-elevation to administrator and PowerShell fallbacks for reliability.
+A powerful Windows batch script for effortlessly switching network adapter profiles between static IPs and DHCP. Features auto-elevation to administrator privileges and robust PowerShell fallbacks for maximum reliability.
 
-## Features ✨
+## ✨ Features
 
-- Clean, text-based UI with bordered sections for menus and headers
-- Lists available network adapters for selection
-- Choose from preset profiles:
-  - **PC 1**: IP `192.168.0.1`, Gateway `192.168.0.2`
-  - **PC 2**: IP `192.168.0.2`, Gateway `192.168.0.1`
-  - **Reset to Default (DHCP)**
-- Sets DNS servers (OpenDNS) for static profiles
-- Resets DNS and IP to DHCP with robust error handling
-- Attempts to remove leftover default gateway routes
-- Color-coded output and error messages
-- Auto-elevates to administrator if needed
+| Feature                     | Description                                                  |
+| --------------------------- | ------------------------------------------------------------ |
+| 🔍 **Adapter Detection**    | Automatically detects and lists all enabled network adapters |
+| 🎯 **Profile Selection**    | Choose from predefined profiles or reset to DHCP             |
+| 🔧 **Static IP Setup**      | Quickly configure static IPs, gateways, and DNS servers      |
+| 🔄 **DHCP Reset**           | Seamlessly reset adapters to obtain IP/DNS automatically     |
+| 🛡️ **Auto-Elevation**       | Automatically requests administrator privileges if needed    |
+| 🛠️ **Error Handling**       | Comprehensive error checking with color-coded messages       |
+| 🔧 **PowerShell Fallbacks** | Uses PowerShell commands as backup for netsh failures        |
+| 🧹 **Route Cleanup**        | Attempts to remove leftover default gateway routes           |
 
-## Usage 🚀
+### 📋 Available Profiles
 
-1. **Run** `ip_config.bat` as administrator (auto-elevates if not).
-2. **Select** your network adapter from the menu.
-3. **Choose** a profile from the menu:
-   - `1` for PC 1
-   - `2` for PC 2
-   - `3` to reset to DHCP
-   - `4` to return to adapter selection
-4. **Follow prompts** for status and errors. After each configuration, you can press `R` to return to the menu or any other key to exit.
+- **PC 1 Profile**: IP `192.168.0.1`, Gateway `192.168.0.2`
+- **PC 2 Profile**: IP `192.168.0.2`, Gateway `192.168.0.1`
+- **Reset to Default**: DHCP configuration with automatic DNS
 
-## License 📄
+## 🚀 Quick Start
 
-MIT License
+### Prerequisites
 
----
+- Windows 10/11 with PowerShell
+- Administrator privileges (script auto-elevates)
 
-Made with ❤️ for quick network switching!
+### Usage
+
+1. **Run** the script:
+
+   ```cmd
+   ip_config.bat
+   ```
+
+   The script will automatically elevate to administrator if needed.
+
+2. **Select Adapter**: Choose your network adapter from the numbered list
+
+3. **Choose Profile**:
+
+   - Press `1` for PC 1 Profile
+   - Press `2` for PC 2 Profile
+   - Press `3` to reset to DHCP
+   - Press `4` to return to adapter selection
+
+4. **Confirmation**: Review the configuration status and press `R` to return to menu or any key to exit
+
+## 📖 Example Output
+
+```
+============================================
+    Choose Configuration Profile
+============================================
+ ----Selected Adapter: Ethernet----
+
+ [1] PC 1 Profile - IP: 192.168.0.1 - Gateway: 192.168.0.2
+
+ [2] PC 2 Profile - IP: 192.168.0.2 - Gateway: 192.168.0.1
+
+ [3] Reset to Default (DHCP)
+
+ [4] Return to Adapter Selection
+
+============================================
+Select profile (1-4):
+```
+
+**Made with ❤️ for network administrators and power users!**
